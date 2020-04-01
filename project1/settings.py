@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_auth.registration',
     'rest_auth',
+    'social_django',
     # my apps
     
     'articles',
@@ -81,6 +82,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends', 
             ],
         },
     },
@@ -203,3 +205,17 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     )
 }
+
+# social_auth
+# ==============================================================
+# SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.vk.VKOAuth2',          
+    'django.contrib.auth.backends.ModelBackend', 
+)
+
+SOCIAL_AUTH_VK_OAUTH2_KEY = '7386039'
+SOCIAL_AUTH_VK_OAUTH2_SECRET = 'aAHbkc7pB90z8M6vyym9'
+# SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
+
+# ================================================================

@@ -17,7 +17,8 @@
         </form>
         <div class="border-top pt-3">
             <small class="text-muted">
-                Need An Account? <a class="ml-2" href="">Sign Up Now</a>
+                {% load trans from i18n %}
+            <a href="/login/vk-oauth2" class='mb-2'><img src="https://pngicon.ru/file/uploads/vk-256x256.png" height="30" width="30" class="avatar-3" data-toggle="tooltip" title="{% trans 'Login via VKontakte' %}">  Login via VK</a>
             </small>
         </div>
     </div>

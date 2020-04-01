@@ -37,9 +37,9 @@
               {% if user.is_authenticated %}
                 <a class="nav-item nav-link" href="{% url 'articles:article-create' %}">New Post</a>
                 <a class="nav-item nav-link" href="{% url 'users:users-single' user.username %}">Profile</a>
-                <a class="nav-item nav-link" href="{% url 'users:logout' %}">Logout</a>
+                <a class="nav-item nav-link" href="{% url 'users:users-logout' %}">Logout</a>
               {% else %}
-                <a class="nav-item nav-link" href="{% url 'users:login' %}">Login</a>
+                <a class="nav-item nav-link" href="{% url 'users:users-login' %}">Login</a>
                 <a class="nav-item nav-link" href="{% url 'users:users-register' %}">Register</a>
               {% endif %}
             </div>
