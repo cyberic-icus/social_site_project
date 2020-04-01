@@ -1,5 +1,5 @@
 from django import forms
-from .models import Article
+from .models import Article, Comment
 
 from tinymce import TinyMCE
 
@@ -15,3 +15,9 @@ class ArticleModelForm(forms.ModelForm):
 			]
 		
 		
+class CommentModelForm(forms.ModelForm):
+	class Meta:
+		model = Comment
+		fields = [
+			'content'
+			]

@@ -20,3 +20,19 @@ class Article(models.Model):
 		
 	def get_absolute_url(self):
 		return reverse('articles:article-detail', kwargs={'id':self.id})
+	
+
+class Comment(models.Model):
+	author = models.ForeignKey(User, on_delete=models.CASCADE)
+	post = models.ForeignKey(Article, on_delete=models.CASCADE)
+	content = models.TextField(null=False)
+	pub_date = models.DateTimeField('Date Published', auto_now_add=True)
+	
+	class Meta:
+		ordering = ['pub_date']
+	
+	def get_absolute_url(self):
+		return reverse('articles:comments-detail', kwargs={'id':self.post.id, 'pk':self.pk})
+	
+	def __str__(self):
+		return f'{self.author.username}\'s Comment'

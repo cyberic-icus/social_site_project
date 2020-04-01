@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+
+
+
+{% block content %}
+  <article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ object.author.photo.url }}">
+    <div class="media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="">{{ object.author.username }}</a>
+        <small class="text-muted">{{ object.pub_date}}</small>
+      </div>
+      {% if object.author == user %}
+          <div>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'articles:comment-update' object.pk %}">Update</a>
+            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'articles:comment-delete' object.pk %}">Delete</a>
+          </div>
+        {% endif %}
+      <p class="article-content">{{ object.content }}</p>
+    </div>
+  </article>
+{% endblock content %}

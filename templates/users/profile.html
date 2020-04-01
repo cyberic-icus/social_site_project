@@ -50,8 +50,9 @@
             </div>
             <h3>{{ instance.header }}</h3>
             <p>{{ instance.content|safe }}</p>
+            <a class="btn btn-outline-info mb-4" href="{% url 'articles:article-detail' instance.id %}">Details</a>
           </div>
-        </article>
+      </article>
     {% endfor %}
     {% if is_paginated %}
 
