@@ -44,16 +44,13 @@ INSTALLED_APPS = [
     'PIL',
     'crispy_forms',
     'evileg_core',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'rest_auth.registration',
-    'rest_auth',
     'social_django',
     # my apps
     
     'articles',
     'users',
     'api',
+    'usergroups',
     
     
 ]
@@ -219,3 +216,5 @@ SOCIAL_AUTH_VK_OAUTH2_SECRET = 'aAHbkc7pB90z8M6vyym9'
 # SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
 
 # ================================================================
+
+

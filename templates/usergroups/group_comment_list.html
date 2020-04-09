@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="mb-3">Comments {{ instance.author.username }} </h1>
+    {% if object_list %}
+      {% for instance in object_list %}
+          <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ instance.author.photo.url }}">
+            <div class="media-body">
+              <div class="article-metadata">
+                <a class="mr-2" href="{{ instance.get_absolute_url }}">{{ instance.author.username }}</a>
+                <small class="text-muted">{{ instance.pub_date|date:"F d, Y" }}</small>
+              </div>
+              <h3>{{ instance.header }}</h3>
+              <p>{{ instance.content|safe }}</p>
+            </div>
+          </article>
+      {% endfor %}
+    {% else %}
+    <p> There is no comment to this post: {{ instance.post.header }}</p>
+    {% endif %}
+{% endblock content %}

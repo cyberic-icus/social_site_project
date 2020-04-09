@@ -28,7 +28,7 @@ comment_urlpatterns = [
 
 urlpatterns = [
 	path('', ArticleListView.as_view(), name='article-list'),
-	path('<int:id>/',include(comment_urlpatterns)),
+	path('<int:id>/', include(comment_urlpatterns)),
     
     
     path('create/', ArticleCreateView.as_view(), name='article-create'),

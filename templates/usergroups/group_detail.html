@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+      <div class="media">
+        <img class="rounded-circle account-img" src="{{ author.photo.url }}">
+        <div class="media-body">
+          <h2 class="account-heading">{{ author.name }}</h2>
+          <p class="text-secondary">{{ author.email }}</p>
+          <p class="text-secondary">{{ author.first_name }} {{ author.last_name }}</p>
+        </div>
+      </div>
+      
+      <legend class="border-bottom mb-4">Profile Info</legend>
+      <p>ID: {{ author.id }}</p>
+              {% if author.is_staff %}
+              <p>Is staff: <strong>Yes</strong></p>
+              {% else %}
+              <p>Is staff: No</p>
+              {% endif %}
+              <p>Date Joined: {{ author.date_joined }}</p>
+              <p>Last Seen: {{ author.last_login }}</p>
+              
+      {% if user.username == author.created_by.username and user.is_authenticated %}
+          <div class="row">
+              <div class='col'>
+              <a class="btn btn-outline-info mb-4" href="{% url 'usergroups:usergroups-update' author.slug %}">Update Profile Info</a>
+              <a class="btn btn-outline-info mb-4" href="{% url 'usergroups:article-create' author.slug %}">Create a Post</a>
+              <a class="btn btn-outline-info mb-4" href='{% url 'usergroups:usergroups-users' author.slug %} ' >Users: {{ get_users }}</a>
+            </div>
+          </div>
+      {% endif %}
+    </div>
+    {% load static %}
+      <legend class="border-bottom mb-4">Posts</legend>
+          {% load static %}
+    <link href="{% static "tinymce/css/prism.css" %}" rel="stylesheet">
+    {% for instance in object_list %}
+        <article class="media content-section ">
+          <img class="rounded-circle article-img" src="{{ instance.author.photo.url }}">
+          <div class="media-body"><style>div {word-break: break-all;}</style>
+            <div class="article-metadata">
+              <a class="mr-2" href="{{ instance.get_absolute_url }}">{{ instance.author.username }}</a>
+              <small class="text-muted">{{ instance.pub_date|date:"F d, Y" }}</small>
+            </div>
+            <h3>{{ instance.header }}</h3>
+            <p>{{ instance.content|safe }}</p>
+            <a class="btn btn-outline-info mb-4" href="{% url 'usergroups:article-detail' author.slug instance.id %}">Details</a>
+          </div>
+      </article>
+    {% endfor %}
+    {% if is_paginated %}
+
+      {% if page_obj.has_previous %}
+        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+      {% endif %}
+
+    {% endif %}
+{% endblock content %}

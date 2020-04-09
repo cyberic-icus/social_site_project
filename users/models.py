@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
+from usergroups.models import UserGroup
+
 
 class CustomUser(AbstractUser):
 	photo = models.ImageField(upload_to = 'profile_pics/', default = 'default.jpg')
@@ -10,3 +12,6 @@ class CustomUser(AbstractUser):
 	
 	def get_absolute_url(self):
 		return reverse('users:users-single', kwargs={'username':self.username})
+		
+
+		

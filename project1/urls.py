@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('tinymce/', include('tinymce.urls')),
     path('articles/', include('articles.urls')),
+    path('groups/', include('usergroups.urls')),
     path('about/', about,),
     path('users/', include('users.urls')),
     path('', include('social_django.urls')),
