@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+<head>
+    {{ form.media }}
+</head>
     <div class="content-section">
       <div class="media">
         <img class="rounded-circle account-img" src="{{ author.photo.url }}">
@@ -22,8 +25,6 @@
               <p>Last Seen: {{ author.last_login }}</p>
               
       {% if user.username == author.username and user.is_authenticated %}
-      <form method="POST" enctype="multipart/form-data">
-          {% csrf_token %}
           
           <div class="row">
               <div class='col'>
@@ -37,8 +38,24 @@
     {% load static %}
       <legend class="border-bottom mb-4">Posts</legend>
           {% load static %}
-    <link href="{% static "tinymce/css/prism.css" %}" rel="stylesheet">
-    {% for instance in object_list %}
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+    
+<link href="{% static "tinymce/css/prism.css" %}" rel="stylesheet">
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Post</button>
+            </div>
+        </form>
+         <script src="{% static 'tinymce/js/prism.js' %}"></script> 
+    </div>
+    </form>
+        {% for instance in object_list %}
         <article class="media content-section ">
           <img class="rounded-circle article-img" src="{{ instance.author.photo.url }}">
           <div class="media-body"><style>div {word-break: break-all;}</style>

@@ -10,7 +10,10 @@ from .models import CustomUser
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from django.urls import reverse_lazy
 
+from articles.forms import ArticleModelForm
 
+
+from django.views.generic import FormView
 """
 1. Дополнить документацию представлений.
 2. Сделать нормальное наследование.
@@ -32,10 +35,11 @@ class UserRegisterView(CreateView):
 	
 
 
-class UserPostView(LoginRequiredMixin, SingleObjectMixin, ListView):
+class UserPostView(LoginRequiredMixin, SingleObjectMixin, ListView, FormView):
 	"""Показывает посты юзера и их автора"""
 	template_name = 'users/profile.html'
 	paginate_by = 5
+	form_class = ArticleModelForm
 	
 	def get(self, request, *args, **kwargs):
 	    self.object = self.get_object()
@@ -52,6 +56,15 @@ class UserPostView(LoginRequiredMixin, SingleObjectMixin, ListView):
 		
 	def get_queryset(self):
 		return self.object.article_set.all()
+		
+	def form_valid(self, form):
+		form.instance.author = self.request.user
+		form.save()
+		return super().form_valid(form)
+	
+	def get_success_url(self):
+		username_ = self.request.user.username
+		return reverse_lazy('users:users-single', kwargs={'username':username_})
         
 class UserListView(LoginRequiredMixin, ListView):
 	"""Показывает всех юзеров"""
