@@ -10,6 +10,8 @@ from users.models import CustomUser
 from .models import UserGroup, UserGroupArticle, UserGroupComment
 from .forms import UserGroupModelForm, ArticleModelForm, CommentModelForm
 from django.urls import reverse_lazy
+from django.views.generic import FormView
+from articles.forms import CommentModelForm as UserCommentModelForm
 
 class UserGroupCreateView(CreateView):
 	"""Регистрация юзера"""
@@ -25,16 +27,25 @@ class UserGroupCreateView(CreateView):
 		slug_ = self.object.slug
 		return reverse_lazy('usergroups:usergroups-single', kwargs={'slug':slug_})
 
-class UserGroupPostView(LoginRequiredMixin, SingleObjectMixin, ListView):
+class UserGroupPostView(LoginRequiredMixin, SingleObjectMixin, ListView, FormView):
 	"""Показывает посты юзера и их автора"""
 	template_name = 'usergroups/group_detail.html'
-	paginate_by = 5
 	context_object_name = 'grouparticle'
+	form_class = ArticleModelForm
 	
+	# Тут должна быть функция, проверяющая вхождение юзера
+	# в группу
+	
+	# Строго говоря, эти функции должны быть в модели
 	def get_users(self):
 		self.usergroup = get_object_or_404(UserGroup, slug=self.kwargs['slug'])
 		return CustomUser.objects.filter(groups__id=self.usergroup.pk).count()
 	
+	def subscribe(self):
+		self.usergroup = get_object_or_404(UserGroup, slug=self.kwargs['slug'])
+		self.usergroup.user_set.add(self.request.user)
+		return True
+		
 	def get(self, request, *args, **kwargs):
 	    self.object = self.get_object()
 	    return super().get(request, *args, **kwargs)
@@ -47,10 +58,21 @@ class UserGroupPostView(LoginRequiredMixin, SingleObjectMixin, ListView):
 		context = super().get_context_data(**kwargs)
 		context['author'] = self.object
 		context['get_users'] = self.get_users()
+		context['subscribe'] = self.subscribe()
 		return context
 		
 	def get_queryset(self):
 		return self.object.usergrouparticle_set.all()
+		
+	def get_success_url(self):
+		slug_ = self.kwargs['slug']
+		return reverse_lazy('usergroups:usergroups-single', kwargs={'slug':slug_})
+	
+	def form_valid(self, form):
+		form.instance.author = get_object_or_404(UserGroup, slug=self.kwargs['slug'])
+		if form.is_valid():
+			form.save()
+		return super().form_valid(form)
 	
 	
         
@@ -114,8 +136,12 @@ class UserGroupArticleUpdateView(LoginRequiredMixin, UserPassesTestMixin, Update
 		id_ = self.kwargs.get('id1')
 		return get_object_or_404(UserGroupArticle, id=id_)
 	
-		
+	def get_success_url(self):
+		slug_ = self.kwargs['slug']
+		return reverse_lazy('usergroups:usergroups-single', kwargs={'slug':slug_})
+	
 	def test_func(self):
+		post = self.get_object()
 		if self.request.user == post.author.created_by:
 			return True
 		return False
@@ -142,10 +168,15 @@ class UserGroupArticleDeleteView(LoginRequiredMixin, UserPassesTestMixin,  Delet
 			return True
 		return False
 	
-class UserGroupArticleDetailView(LoginRequiredMixin, SingleObjectMixin, ListView):
+class UserGroupArticleDetailView(LoginRequiredMixin, SingleObjectMixin, ListView, FormView):
 	"""Представление конкретной статьи."""
 	template_name = 'usergroups/group_article_detail.html' 
-	paginate_by = 5
+	form_class = UserCommentModelForm
+	
+	def get_success_url(self):
+		id_ = self.kwargs['id']
+		slug_ = self.kwargs['slug']
+		return reverse_lazy('usergroups:article-detail', kwargs={'id':id_, 'slug':slug_})
 	
 	def get_object(self):
 		id_ = self.kwargs.get('id')
@@ -165,6 +196,11 @@ class UserGroupArticleDetailView(LoginRequiredMixin, SingleObjectMixin, ListView
 		
 	def get_post(self):
 		self.request.user_post = self.get_object()
+		
+	def form_valid(self, form):
+		form.instance.post = self.get_object()
+		form.instance.author = self.request.user
+		return super().form_valid(form)
 
 	
 class UserGroupCommentListView(LoginRequiredMixin, ListView):

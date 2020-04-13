@@ -1,86 +1,69 @@
-{% load static %}
 <!DOCTYPE html>
 <html>
-<head>
-    {% load static %}
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-    <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
-    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
-
-    {% if title %}
-        <title>Django Blog -  {{ user.username }} 1</title>
-    {% else %}
-        <title>Django Blog</title>
-    {% endif %}
-</head>
-<body>
-    <header class="site-header">
-      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
-        <div class="container">
-          <a class="navbar-brand mr-4" href="">Hello, {{ user.username }}</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarToggle">
-            <div class="navbar-nav mr-auto">
-              <a class="nav-item nav-link" href="{% url 'users:users-list' %}">Home</a>
-              <a class="nav-item nav-link" href="/about">About</a>
+   <head>
+      {% load static %}
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
+      <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+      {% if title %}
+      <title>Django Blog -  {{ user.username }} 1</title>
+      {% else %}
+      <title>Django Blog</title>
+      {% endif %}
+   </head>
+   <body>
+      <header class="site-header">
+         <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+            <div class="container">
+               <a class="navbar-brand mr-4" href=""><img class="rounded-circle article-svg" src='{{user.photo.url}}'</a>
+               <div class="collapse navbar-collapse" id="navbarToggle">
+                  <div class="navbar-nav mr-auto">
+                     <a class="nav-item nav-link" href="{% url 'users:users-list' %}">Home</a>
+                     <a class="nav-item nav-link" href="/about">About</a>
+                  </div>
+                  <!-- Navbar Right Side -->
+                  <div class="navbar-nav">
+                     {% if user.is_authenticated %}
+                     <a class="nav-item nav-link" href="{% url 'articles:article-create' %}">New Post</a>
+                     <a class="nav-item nav-link" href="{% url 'users:users-single' user.username %}">Profile</a>
+                     <a class="nav-item nav-link" href="{% url 'users:users-logout' %}">Logout</a>
+                     {% else %}
+                     <a class="nav-item nav-link" href="{% url 'users:users-login' %}">Login</a>
+                     <a class="nav-item nav-link" href="{% url 'users:users-register' %}">Register</a>
+                     {% endif %}
+                  </div>
+               </div>
             </div>
-            <!-- Navbar Right Side -->
-            <div class="navbar-nav">
-              {% if user.is_authenticated %}
-                <a class="nav-item nav-link" href="{% url 'articles:article-create' %}">New Post</a>
-                <a class="nav-item nav-link" href="{% url 'users:users-single' user.username %}">Profile</a>
-                <a class="nav-item nav-link" href="{% url 'users:users-logout' %}">Logout</a>
-              {% else %}
-                <a class="nav-item nav-link" href="{% url 'users:users-login' %}">Login</a>
-                <a class="nav-item nav-link" href="{% url 'users:users-register' %}">Register</a>
-              {% endif %}
+         </nav>
+      </header>
+      <main role="main" class="container">
+         <div class="row">
+            {% if user.is_authenticated %}
+            <div class="col-md-4" > <!--background:url(https://image.flaticon.com/icons/svg/660/660611.svg) no-repeat -10px;background-size:270px 25px; -->
+                  <nav class="list-group bg-transparent ">
+                     <a href='{% url 'users:users-single' user.username %}' class="list-group-item list-group-item-light border-0 bg-transparent"><small>My Profile</small></a>
+                     <a href='{% url 'usergroups:usergroups-list' %}' class="list-group-item list-group-item-light border-0 bg-transparent"><small>Groups</small></a>
+                     <a href='{% url 'users:users-list' %}' class="list-group-item list-group-item-light border-0 bg-transparent"><small>Users</small></a>
+                     <a href='' class="list-group-item list-group-item-light border-0 bg-transparent"><small>etc</small></a>
+                  </nav>
+                  </p>
             </div>
-          </div>
-        </div>
-      </nav>
-    </header>
-    <main role="main" class="container">
-      <div class="row">
-        <div class="col-md-8">
-          {% block content %}{% endblock %}
-        </div>
-        <div class="col-md-4">
-          <div class="content-section sticky-top">
+            {% endif %}
+            <div class="col-md-8" style='right:240px;'>
+               {% block content %}{% endblock %}
+            </div>
             
-            <h3>Actions</h3>
-              <ul class="list-group">
-                {% if user.is_authenticated %}
-                <a href="{% url 'users:users-single' user.username %}" class="list-group-item list-group-item-light">My Profile</a>
-                <a href='{% url 'articles:article-create' %}' class="list-group-item list-group-item-light">New Post</a>
-                <a href='{% url 'usergroups:usergroups-list' %}' class="list-group-item list-group-item-light">Groups</a>
-                
-                <a href='' class="list-group-item list-group-item-light">etc</a>
-                {% else %}
-                <a href="{% url 'users:users-register' %}" class="list-group-item list-group-item-light">Create an Account</a>
-                <a href='' class="list-group-item list-group-item-light">Comming soon!</a>
-                <a href='' class="list-group-item list-group-item-light">Comming soon!</a>
-                <a href='' class="list-group-item list-group-item-light">etc</a>
-                {% endif %}
-              </ul>
-            </p>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="{% static 'tinymce/js/prism.js' %}"></script> 
-</body>
+         </div>
+      </main>
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+      <script src="{% static 'tinymce/js/prism.js' %}"></script> 
+   </body>
 </html>

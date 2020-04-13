@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 
-
+{% load crispy_forms_tags %}
 
 {% block content %}
   <article class="media content-section">
@@ -10,22 +10,45 @@
       <div class="article-metadata">
         <a class="mr-2" href="{% url 'users:users-single' object.author.username %}">{{ object.author.username }}</a>
         <small class="text-muted">{{ object.pub_date}}</small>
+        {% if object.author == user %}
+        <div class="btn-group ml-3 dropleft " style='left:350px;'>
+            <img height='50' width='50' src="/media/menu.png" class='dropdown-toggle' data-toggle="dropdown" >
+            <span class="sr-only">Toggle Dropdown</span>
+            <div class="dropdown-menu" style='border-radius:10px;'>
+               <a class="dropdown-item" href="{% url 'articles:article-update' object.id %}">Update</a>
+               <a class="dropdown-item" href="{% url 'articles:article-delete' object.id %}">Delete</a>
+            </div>
+         </div>
+         {% endif %}
       </div>
-      {% if object.author == user %}
-          <div>
-            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'articles:article-update' object.id %}">Update</a>
-            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'articles:article-delete' object.id %}">Delete</a>
-          </div>
-        {% endif %}
       <h2 class="article-title">{{ object.header }}</h2>
       <p class="article-content">{{ object.content|safe }}</p>
-      <a class="btn btn-outline-info mb-4" href="{% url 'articles:comments-create' object.id %}">Comment</a>
     </div>
   </article>
   
   
       <legend class="border-bottom mb-4">Comments</legend>
-          
+      {% if not object_list %}
+       <p> There is no comments here yet.</p>
+       {% endif %}
+      {% if user == object.author and user.is_authenticated %}
+          {% load static %}
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+    
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Post</button>
+            </div>
+        </form>
+    </div>
+    </form>
+    {% endif %}
   {% for instance in object_list %}
         <article class="media content-section ">
           <img class="rounded-circle article-img" src="{{ instance.author.photo.url }}">
@@ -33,9 +56,16 @@
             <div class="article-metadata">
               <a class="mr-2" href="{{ instance.get_absolute_url }}">{{ instance.author.username }}</a>
               <small class="text-muted">{{ instance.pub_date|date:"F d, Y" }}</small>
+              <div class="btn-group ml-3 " style='left:400px;'>
+            <img height='50' width='50' src="/media/menu.png" class='dropdown-toggle' data-toggle="dropdown" >
+            <span class="sr-only">Toggle Dropdown</span>
+            <div class="dropdown-menu" style='border-radius:10px;'>
+               <a class="dropdown-item" href="{% url 'articles:comments-update' object.id instance.id %}">Update</a>
+               <a class="dropdown-item" href="{% url 'articles:comments-delete' object.id instance.id %}">Delete</a>
+            </div>
+         </div>
             </div>
             <p>{{ instance.content }}</p>
-            <a class="btn btn-outline-info mb-4" href="{% url 'articles:comments-detail' id=instance.post.id pk=instance.pk %}">Details</a>
           </div>
         </article>
     {% endfor %}
@@ -60,4 +90,5 @@
       {% endif %}
 
     {% endif %}
+    
 {% endblock content %}

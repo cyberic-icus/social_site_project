@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 
 from .models import Article, Comment
 from .forms import ArticleModelForm, CommentModelForm
-
+from django.views.generic import FormView
 
 """
 1. Дополнить документацию представлений.
@@ -23,10 +23,10 @@ class ArticleListView(LoginRequiredMixin, ListView):
 	queryset = Article.objects.all()
 	
 	
-class ArticleDetailView(LoginRequiredMixin, SingleObjectMixin, ListView):
+class ArticleDetailView(LoginRequiredMixin, SingleObjectMixin, ListView, FormView):
 	"""Представление конкретной статьи."""
 	template_name = 'articles/article_detail.html'
-	paginate_by = 5
+	form_class = CommentModelForm
 	
 	def get_object(self):
 		id_ = self.kwargs.get('id')
@@ -46,6 +46,18 @@ class ArticleDetailView(LoginRequiredMixin, SingleObjectMixin, ListView):
 		
 	def get_post(self):
 		self.request.user_post = self.get_object()
+		
+	def form_valid(self, form):
+		form.instance.post = self.get_object()
+		form.instance.author = self.request.user
+		if form.is_valid():
+			form.save()
+		return super().form_valid(form)
+		
+	
+	def get_success_url(self):
+		id_ = self.kwargs.get('id')
+		return reverse_lazy('articles:article-detail', kwargs={'id':id_})
 
 
 	
@@ -108,7 +120,8 @@ class ArticleDeleteView(LoginRequiredMixin, UserPassesTestMixin,  DeleteView):
 def about(request):
 	return render(request, 'about.html', {})
 	
-
+def home(request):
+	return render(request, 'home.html', {})
 
 	
 class CommentListView(LoginRequiredMixin, ListView):
@@ -174,7 +187,7 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin,  DeleteView):
 	
 	def get_success_url(self):
 		id_ = self.kwargs.get('id')
-		return reverse_lazy('articles:comments-list', kwargs={'id':id_})
+		return reverse_lazy('articles:article-detail', kwargs={'id':id_})
 		
 		
 	def get_object(self):

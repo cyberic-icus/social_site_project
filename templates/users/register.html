@@ -1,31 +1,30 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
-        <form method="POST" enctype="multipart/form-data" >
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Join Today</legend>
-                {{ form|crispy }}
-                {% load recaptcha from evileg_core %}
-    {% recaptcha 'form'  %}
-    {% if messages %}
-      {% for message in messages %}
-        {{ message }}
-      {% endfor %}
-    {% endif %}
-    
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Sign Up</button>
-            </div>
-        </form>
-        <div class="border-top pt-3">
-            <small class="text-muted">
-                {% load trans from i18n %}
-            <a href="/login/vk-oauth2" class='mb-2'><img src="https://pngicon.ru/file/uploads/vk-256x256.png" height="30" width="30" class="avatar-3" data-toggle="tooltip" title="{% trans 'Login via VKontakte' %}">  Login via VK</a>
-                <p>Already Have An Account? <a class="ml-2" href="{% url 'users:users-login' %}">Sign In</a></p>
-            </small>
-        </div>
-    </div>
+<div class="content-section">
+   <form method="POST" enctype="multipart/form-data" >
+      {% csrf_token %}
+      <fieldset class="form-group">
+         <legend class="border-bottom mb-4">Join Today</legend>
+         {{ form|crispy }}
+         {% load recaptcha from evileg_core %}
+         {% recaptcha 'form'  %}
+         {% if messages %}
+         {% for message in messages %}
+         {{ message }}
+         {% endfor %}
+         {% endif %}
+      </fieldset>
+      <div class="form-group">
+         <button class="btn btn-outline-info" type="submit">Sign Up</button>
+      </div>
+   </form>
+   <div class="border-top pt-3">
+      <small class="text-muted">
+         {% load trans from i18n %}
+         <a href="/login/vk-oauth2" class='mb-2'><img src="https://pngicon.ru/file/uploads/vk-256x256.png" height="30" width="30" class="avatar-3" data-toggle="tooltip" title="{% trans 'Login via VKontakte' %}">  Login via VK</a>
+         <p>Already Have An Account? <a class="ml-2" href="{% url 'users:users-login' %}">Sign In</a></p>
+      </small>
+   </div>
+</div>
 {% endblock content %}

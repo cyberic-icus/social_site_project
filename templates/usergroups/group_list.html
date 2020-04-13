@@ -2,22 +2,30 @@
 {% block content %}
 {% load static %}
 <div class='content-section'>
-	<div class='media-body'>
-		<h2>Groups:</h2>
-	</div>
+   <div class='media-body'>
+      <h2>Subscriptions:</h2>
+   </div>
+   
+   
+</div>
 
-{% for instance in object_list %}
-	<legend class="border-bottom mb-4"></legend>
-	<div class='row'>
-		<div class='col-'>
-			<a href="{% url 'usergroups:usergroups-single' instance.slug %}"><img class='rounded-circle account-img ml-5' src ='/media/{{instance.photo}}'></a>
-		</div>
-	
-		<div class='col- mt-3'>
-			<a href="{% url 'usergroups:usergroups-single' instance.slug %}"><h6>{{instance.name}}</h6></a>
-			<p>Last Seen:</p>
-		</div>
-	</div>
-{% endfor %}
+<div class='content-section'>
+   <div class='media-body'>
+      <h2>Groups:</h2>
+   </div>
+   {% for instance in object_list %}
+   <legend class="border-bottom mb-4"></legend>
+   <div class='row'>
+      <div class='col-'>
+         <a href="{% url 'usergroups:usergroups-single' instance.slug %}"><img class='rounded-circle account-img ml-5' src ='/media/{{instance.photo}}'></a>
+      </div>
+      <div class='col- mt-3'>
+         <a href="{% url 'usergroups:usergroups-single' instance.slug %}">
+            <h6>{{instance.name}}</h6>
+         </a>
+         <p>Last Seen:</p>
+      </div>
+   </div>
+   {% endfor %}
 </div>
 {% endblock content %}

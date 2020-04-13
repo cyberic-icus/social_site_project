@@ -16,7 +16,10 @@ class UserGroup(Group):
 	
 	def get_absolute_url(self):
 		return reverse('usergroups:usergroups-single', kwargs={'slug':self.slug})
-	
+		
+	def __str__(self):
+		return self.name
+		
 	
 class UserGroupArticle(models.Model):
 	author = models.ForeignKey(UserGroup, on_delete=models.CASCADE)

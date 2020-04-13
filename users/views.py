@@ -37,8 +37,8 @@ class UserRegisterView(CreateView):
 
 class UserPostView(LoginRequiredMixin, SingleObjectMixin, ListView, FormView):
 	"""Показывает посты юзера и их автора"""
+	context_object_name = 'posts'
 	template_name = 'users/profile.html'
-	paginate_by = 5
 	form_class = ArticleModelForm
 	
 	def get(self, request, *args, **kwargs):
@@ -59,7 +59,8 @@ class UserPostView(LoginRequiredMixin, SingleObjectMixin, ListView, FormView):
 		
 	def form_valid(self, form):
 		form.instance.author = self.request.user
-		form.save()
+		if form.is_valid():
+			form.save()
 		return super().form_valid(form)
 	
 	def get_success_url(self):
@@ -95,3 +96,4 @@ def about(request):
 		'user':me,
 	}
 	return render(request, 'about.html', context)
+
